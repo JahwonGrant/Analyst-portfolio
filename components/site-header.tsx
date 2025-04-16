@@ -90,7 +90,7 @@ function HeaderContent() {
         >
           <Link
             href="/admin/login"
-            className="text-muted-foreground hover:text-primary transition-colors opacity-50 hover:opacity-100"
+            className="text-muted-foreground hover:text-primary transition-colors"
             title="Admin Login"
           >
             <Lock className="h-4 w-4" />
@@ -122,6 +122,12 @@ function HeaderContent() {
                     {item.name}
                   </Link>
                 ))}
+                <Link
+                  href="/admin/login"
+                  className="px-2 py-1 text-lg font-medium transition-colors hover:text-primary text-muted-foreground"
+                >
+                  Admin Login
+                </Link>
                 <Button className="mt-4 executive-button">
                   <Link href="/#contact">Get in Touch</Link>
                 </Button>

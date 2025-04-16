@@ -149,3 +149,20 @@ export async function getSubmissionStats() {
     submissionsByDay,
   }
 }
+
+// Add this function to retrieve submissions
+export async function getSubmissions() {
+  try {
+    // Check if localStorage is available (client-side)
+    if (typeof window !== "undefined" && window.localStorage) {
+      const storedSubmissions = localStorage.getItem("contactSubmissions")
+      return storedSubmissions ? JSON.parse(storedSubmissions) : []
+    }
+
+    // Server-side fallback (would normally connect to a database)
+    return []
+  } catch (error) {
+    console.error("Error getting submissions:", error)
+    return []
+  }
+}
