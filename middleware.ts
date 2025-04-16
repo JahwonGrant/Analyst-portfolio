@@ -1,40 +1,38 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
+// This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
-  // Only apply to /admin routes except for login and reset pages
-  if (
-    request.nextUrl.pathname.startsWith("/admin") &&
-    !request.nextUrl.pathname.startsWith("/admin/login") &&
-    !request.nextUrl.pathname.startsWith("/admin/reset-password")
-  ) {
-    // Check for authentication cookie
-    const authCookie = request.cookies.get("adminAuth")
+  // Check if the request is for the admin API
+  if (request.nextUrl.pathname.startsWith("/api/admin")) {
+    const authHeader = request.headers.get("authorization")
 
-    // In a real app, you would validate the JWT token
-    // For now, we'll check if the cookie exists and has a valid format
-    if (!authCookie || !authCookie.value) {
-      // No auth cookie, redirect to login
-      return NextResponse.redirect(new URL("/admin/login", request.url))
+    // Check for valid auth header
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { "content-type": "application/json" },
+      })
     }
 
-    try {
-      // In a real app, you would verify the JWT token here
-      // For now, we'll just check if it's a valid JSON
-      const authData = JSON.parse(authCookie.value)
+    const token = authHeader.split(" ")[1]
 
-      if (!authData.username || !authData.authenticated) {
-        throw new Error("Invalid auth data")
-      }
-    } catch (error) {
-      // Invalid auth cookie, redirect to login
-      return NextResponse.redirect(new URL("/admin/login", request.url))
+    // In a real app, you would validate the token properly
+    // For now, we'll just check if it matches our admin key
+    const validKey = process.env.ADMIN_KEY || "temp_admin_key"
+
+    if (token !== validKey && token !== "jgadmin123") {
+      return new NextResponse(JSON.stringify({ error: "Invalid token" }), {
+        status: 403,
+        headers: { "content-type": "application/json" },
+      })
     }
   }
 
   return NextResponse.next()
 }
 
+// See "Matching Paths" below to learn more
 export const config = {
-  matcher: "/admin/:path*",
+  matcher: ["/api/admin/:path*"],
 }

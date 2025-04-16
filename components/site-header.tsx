@@ -16,7 +16,7 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu } from "lucide-react"
+import { Menu, Lock } from "lucide-react"
 
 const navItems = [
   { name: "Home", href: "/" },
@@ -88,6 +88,14 @@ function HeaderContent() {
           transition={{ duration: 0.5 }}
           className="flex items-center space-x-4"
         >
+          <Link
+            href="/admin/login"
+            className="text-muted-foreground hover:text-primary transition-colors opacity-50 hover:opacity-100"
+            title="Admin Login"
+          >
+            <Lock className="h-4 w-4" />
+            <span className="sr-only">Admin Login</span>
+          </Link>
           <ModeToggle />
           <Button asChild className="hidden md:inline-flex executive-button">
             <Link href="/#contact">Get in Touch</Link>

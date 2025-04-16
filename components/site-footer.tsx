@@ -91,6 +91,11 @@ export function SiteFooter() {
                     Resume
                   </Link>
                 </li>
+                <li>
+                  <Link href="/admin/login" className="text-xs text-muted-foreground hover:text-foreground">
+                    Admin
+                  </Link>
+                </li>
               </ul>
             </div>
             <div className="space-y-4">

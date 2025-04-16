@@ -4,8 +4,6 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
 // Simple client-side auth management
-// In a real app, you would use a more robust solution like NextAuth.js
-
 export function useAdminAuth() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
@@ -31,8 +29,8 @@ export function useAdminAuth() {
 
   const login = (username: string, password: string): Promise<boolean> => {
     return new Promise((resolve) => {
-      // In a real app, you would validate against a database
-      if (username === "admin" && (password === process.env.ADMIN_PASSWORD || password === "admin123")) {
+      // Updated credentials
+      if (username === "adminjg" && password === "jgadmin123") {
         localStorage.setItem("adminLoggedIn", "true")
         localStorage.setItem("adminUsername", username)
 
