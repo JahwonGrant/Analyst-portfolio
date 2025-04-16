@@ -101,6 +101,13 @@
   background-clip: text;
 }
 
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 .accent-gradient {
   background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(45 100% 70%) 100%);
 }
@@ -110,6 +117,14 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.accent-bg {
+  background-color: hsl(var(--accent) / 0.1);
+}
+
+.accent-border {
+  border-color: hsl(var(--accent) / 0.2);
 }
 
 .executive-card {
@@ -157,6 +172,12 @@
 
 /* Subtle dot pattern */
 .dot-pattern {
+  background-image: radial-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Subtle pattern */
+.subtle-pattern {
   background-image: radial-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px);
   background-size: 20px 20px;
 }
@@ -214,4 +235,36 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Primary button */
+.primary-button {
+  @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors;
+}
+
+/* Subtle float animation for hero image */
+.subtle-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
 }

@@ -1,5 +1,7 @@
+"use client"
+
 import Link from "next/link"
-import { Github, Linkedin, Mail } from "lucide-react"
+import { Github, Linkedin } from "lucide-react"
 
 export function SiteFooter() {
   return (
@@ -16,7 +18,7 @@ export function SiteFooter() {
             </p>
             <div className="flex space-x-4">
               <Link
-                href="https://linkedin.com/in/jahwongrant"
+                href="https://www.linkedin.com/in/jahwongrant/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
@@ -25,20 +27,13 @@ export function SiteFooter() {
                 <span className="sr-only">LinkedIn</span>
               </Link>
               <Link
-                href="https://github.com/jahwongrant"
+                href="https://github.com/JahwonGrant"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
               >
                 <Github className="h-5 w-5" />
                 <span className="sr-only">GitHub</span>
-              </Link>
-              <Link
-                href="mailto:jahwongrant@gmail.com"
-                className="text-muted-foreground hover:text-primary transition-colors"
-              >
-                <Mail className="h-5 w-5" />
-                <span className="sr-only">Email</span>
               </Link>
             </div>
           </div>
@@ -47,9 +42,16 @@ export function SiteFooter() {
               <h3 className="text-sm font-medium">Navigation</h3>
               <ul className="space-y-2 text-sm">
                 <li>
-                  <Link href="/" className="text-muted-foreground hover:text-primary transition-colors">
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      window.scrollTo({ top: 0, behavior: "smooth" })
+                    }}
+                    className="text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                  >
                     Home
-                  </Link>
+                  </a>
                 </li>
                 <li>
                   <Link href="/#about" className="text-muted-foreground hover:text-primary transition-colors">
@@ -71,48 +73,23 @@ export function SiteFooter() {
             <div className="space-y-4">
               <h3 className="text-sm font-medium">Resources</h3>
               <ul className="space-y-2 text-sm">
+                <li className="text-muted-foreground">Insights (Coming Soon)</li>
+                <li className="text-muted-foreground">Case Studies (Coming Soon)</li>
+                <li className="text-muted-foreground">Resources (Coming Soon)</li>
                 <li>
-                  <Link href="/insights" className="text-muted-foreground hover:text-primary transition-colors">
-                    Insights
+                  <Link href="/#projects" className="text-muted-foreground hover:text-primary transition-colors">
+                    All Projects
                   </Link>
                 </li>
-                <li>
-                  <Link href="/case-studies" className="text-muted-foreground hover:text-primary transition-colors">
-                    Case Studies
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/resources" className="text-muted-foreground hover:text-primary transition-colors">
-                    Resources
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/resume.pdf" className="text-muted-foreground hover:text-primary transition-colors">
-                    Resume
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/admin/login" className="text-xs text-muted-foreground hover:text-foreground">
-                    Admin
-                  </Link>
-                </li>
+                <li className="text-xs italic text-muted-foreground mt-2">Content publishing soon</li>
               </ul>
             </div>
             <div className="space-y-4">
               <h3 className="text-sm font-medium">Contact</h3>
               <ul className="space-y-2 text-sm">
+                <li className="text-muted-foreground">jahwongrant@gmail.com</li>
                 <li>
-                  <Link
-                    href="mailto:jahwongrant@gmail.com"
-                    className="text-muted-foreground hover:text-primary transition-colors"
-                  >
-                    jahwongrant@gmail.com
-                  </Link>
-                </li>
-                <li>
-                  <Link href="tel:+17868689730" className="text-muted-foreground hover:text-primary transition-colors">
-                    +1 (786) 868-9730
-                  </Link>
+                  <span className="text-muted-foreground">Contact via email for phone number</span>
                 </li>
                 <li>
                   <span className="text-muted-foreground">Pensacola, Florida</span>

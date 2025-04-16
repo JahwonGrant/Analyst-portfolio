@@ -90,7 +90,7 @@ export default function ProjectsSection() {
                       <div className="relative">
                         <div className="aspect-video overflow-hidden">
                           <Image
-                            src={project.coverImage || "/placeholder.svg"}
+                            src={project.coverImage || "/images/insight-visuals.png"}
                             alt={project.title}
                             width={800}
                             height={600}
@@ -152,8 +152,71 @@ export default function ProjectsSection() {
             {/* Other tabs content would go here - simplified for brevity */}
             {categories.slice(1).map((category) => (
               <TabsContent key={category.value} value={category.value} className="mt-6">
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground">Filter by {category.label} category to see relevant projects.</p>
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                  {projects
+                    .filter((project) => project.categories.includes(category.label))
+                    .map((project) => (
+                      <motion.div key={project.id} variants={item} layout>
+                        <Card className="group h-full overflow-hidden transition-all duration-300 hover:shadow-lg border accent-border card-hover">
+                          <div className="relative">
+                            <div className="aspect-video overflow-hidden">
+                              <Image
+                                src={project.coverImage || "/images/insight-visuals.png"}
+                                alt={project.title}
+                                width={800}
+                                height={600}
+                                className="object-cover transition-all duration-500 group-hover:scale-105"
+                              />
+                            </div>
+                            <div className="absolute right-4 top-4 flex gap-2">
+                              {project.githubUrl && (
+                                <Button size="icon" variant="ghost" className="rounded-full bg-background/80" asChild>
+                                  <a href={project.githubUrl} target="_blank" rel="noreferrer">
+                                    <Github className="h-5 w-5" />
+                                    <span className="sr-only">GitHub</span>
+                                  </a>
+                                </Button>
+                              )}
+                              {project.demoUrl && (
+                                <Button size="icon" variant="ghost" className="rounded-full bg-background/80" asChild>
+                                  <a href={project.demoUrl} target="_blank" rel="noreferrer">
+                                    <ExternalLink className="h-5 w-5" />
+                                    <span className="sr-only">Visit Project</span>
+                                  </a>
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                          <CardHeader>
+                            <div className="flex flex-col space-y-1">
+                              <CardTitle className="text-xl gradient-text">{project.title}</CardTitle>
+                              <p className="text-sm text-muted-foreground">{project.date}</p>
+                            </div>
+                            <CardDescription className="line-clamp-3 mt-2">{project.summary}</CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="flex flex-wrap gap-2">
+                              {project.categories.slice(0, 3).map((tag, tagIndex) => (
+                                <Badge key={tagIndex} variant="secondary">
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {project.categories.length > 3 && (
+                                <Badge variant="outline">+{project.categories.length - 3}</Badge>
+                              )}
+                            </div>
+                          </CardContent>
+                          <CardFooter className="flex justify-between">
+                            <Button asChild variant="outline" className="group">
+                              <Link href={`/projects/${project.slug}`}>
+                                View Details
+                                <ArrowUpRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                              </Link>
+                            </Button>
+                          </CardFooter>
+                        </Card>
+                      </motion.div>
+                    ))}
                 </div>
               </TabsContent>
             ))}

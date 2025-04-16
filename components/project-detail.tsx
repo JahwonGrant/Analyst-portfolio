@@ -4,7 +4,7 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ArrowRight, Github, ExternalLink, FileText, BarChart2, Database, Code, Mail } from "lucide-react"
+import { ArrowRight, Github, FileText, BarChart2, Database, Code, Mail } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -284,23 +284,12 @@ export function ProjectDetail({ project }: ProjectDetailProps) {
             </Link>
           </Button>
 
-          {project.githubUrl && (
-            <Button asChild variant="outline" className="group">
-              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                <Github className="mr-2 h-4 w-4" />
-                View Code
-              </a>
-            </Button>
-          )}
-
-          {project.demoUrl && (
-            <Button asChild variant="outline" className="group">
-              <a href={project.demoUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="mr-2 h-4 w-4" />
-                Live Demo
-              </a>
-            </Button>
-          )}
+          <Button asChild variant="outline" className="group">
+            <a href="https://github.com/JahwonGrant" target="_blank" rel="noopener noreferrer">
+              <Github className="mr-2 h-4 w-4" />
+              GitHub Profile
+            </a>
+          </Button>
         </div>
 
         <Button asChild className="executive-button group">

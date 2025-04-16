@@ -1,9 +1,8 @@
 "use client"
 
-import type React from "react"
-
 import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
+import Script from "next/script"
 import { motion, useAnimation, useInView } from "framer-motion"
 import {
   ArrowRight,
@@ -24,6 +23,67 @@ export type ContactCategory = "general" | "job" | "consulting" | "freelance" | "
 export default function HomePage() {
   return (
     <>
+      {/* Formspree Widget Script */}
+      <Script id="formspree-widget" strategy="afterInteractive">
+        {`
+          window.formbutton=window.formbutton||function(){(formbutton.q=formbutton.q||[]).push(arguments)};
+          formbutton("create", {
+            action: "https://formspree.io/f/mwpljkod",
+            title: "Contact Me",
+            description: "I'll get back to you within 24-48 hours.",
+            fields: [
+              { 
+                type: "email", 
+                label: "Your Email:", 
+                name: "email",
+                required: true,
+                placeholder: "your@email.com"
+              },
+              {
+                type: "text",
+                label: "Your Name:",
+                name: "name",
+                required: true,
+                placeholder: "John Doe"
+              },
+              {
+                type: "select",
+                label: "Inquiry Type:",
+                name: "category",
+                options: [
+                  { label: "Job Opportunity", value: "job" },
+                  { label: "Consulting", value: "consulting" },
+                  { label: "Freelance Work", value: "freelance" },
+                  { label: "General Inquiry", value: "general" },
+                  { label: "Other", value: "other" }
+                ]
+              },
+              {
+                type: "textarea",
+                label: "Message:",
+                name: "message",
+                placeholder: "How can I help you?",
+                required: true
+              },
+              { type: "submit" }      
+            ],
+            styles: {
+              title: {
+                backgroundColor: "#3b82f6"
+              },
+              button: {
+                backgroundColor: "#3b82f6"
+              },
+              description: {
+                color: "#64748b"
+              }
+            },
+            initiallyVisible: false
+          });
+        `}
+      </Script>
+      <Script src="https://formspree.io/js/formbutton-v1.min.js" strategy="afterInteractive" />
+
       <HeroSection />
       <AboutSection />
       <ExpertiseSection />
@@ -117,10 +177,10 @@ function HeroSection() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="group">
-                <Link href="/resume.pdf">
+                <a href="/resume.pdf" download>
                   <Download className="mr-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
                   Download Resume
-                </Link>
+                </a>
               </Button>
             </motion.div>
 
@@ -170,27 +230,6 @@ function HeroSection() {
                 >
                   <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
                   <path d="M9 18c-4.51 2-5-2-7-2"></path>
-                </svg>
-              </Link>
-              <Link
-                href="mailto:jahwongrant@gmail.com"
-                className="p-2 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
-                aria-label="Email"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-mail"
-                >
-                  <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                  <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                 </svg>
               </Link>
             </motion.div>
@@ -274,26 +313,36 @@ function AboutSection() {
 
           <motion.div variants={itemVariants} className="space-y-6 executive-paragraph">
             <p>
-              Born and raised in Miami, Florida, I've always been driven by a passion for problem-solving and helping
-              others. I initially started college on a pre-nursing track, but my curiosity for technology and business
-              led me to pivot into Management Information Systems.
+              Born and raised in Miami, Florida, I've always been driven by a natural curiosity for solving problems and
+              making a meaningful impact. I originally started college on a pre-nursing path, but it didn't take long
+              for me to realize my true interest was at the intersection of technology and business. That shift led me
+              to pursue a degree in Management Information Systems, which I earned in 2023.
             </p>
             <p>
-              I earned my MIS degree in 2023 and am currently pursuing my MBA with a concentration in Business
-              Analytics, expected in 2026. Along the way, I interned at Progressive Insurance and worked as an HRIS Data
-              Analyst at BlueVoyant, where I led high-impact projects in pricing strategy, reporting automation, and
-              dashboard development.
+              Now, I'm a data analyst with 3+ years of experience helping organizations turn complex data into clear,
+              actionable insights. I've worked on everything from pricing strategy and reporting automation to
+              full-scale dashboard development. My foundation is built on strong technical skills, but my real value
+              comes from bridging data with business goals—translating numbers into stories that drive decisions.
             </p>
             <p>
-              Today, I'm a data analyst with over 3 years of experience turning complex datasets into actionable
-              insights. My focus areas include data visualization, process improvement, and business
-              intelligence—enabling smarter, data-driven decision-making.
+              Currently, I'm pursuing my MBA with a concentration in Business Analytics (expected 2026), continuing to
+              sharpen my skills in areas like data visualization, process improvement, and Lean Six Sigma methodologies.
+              I've had the opportunity to work as a Data Analyst at Progressive Insurance and as an HRIS Data Analyst at
+              BlueVoyant, where I collaborated with cross-functional teams on high-impact projects that boosted
+              operational efficiency and strengthened business intelligence across the organization.
             </p>
             <p>
-              Outside of work, I'm a proud member of Omega Psi Phi Fraternity, Inc., where I'm dedicated to youth
-              mentorship, community service, and academic excellence. I also stay engaged through professional groups
-              like the PMI Emerald Coast Chapter and the Association for Information Systems (AIS) at UWF to
-              continuously sharpen my skills.
+              Outside of the 9-to-5, I stay connected to my values through my involvement with Omega Psi Phi Fraternity,
+              Inc.—mentoring youth, serving my community, and promoting academic excellence. I'm also active in
+              professional groups like the PMI Emerald Coast Chapter and the Association for Information Systems at UWF,
+              where I continue to learn, collaborate, and grow both personally and professionally.
+            </p>
+            <p>
+              In addition to analytics, I've developed a strong interest in full-stack web and app development. I've
+              been building hands-on skills in HTML, CSS, JavaScript, React, and Tailwind CSS—along with version control
+              using Git and GitHub. My portfolio site was designed and developed entirely by me, and it reflects both my
+              technical growth and creative approach to problem-solving. Whether it's building interactive dashboards or
+              designing clean, responsive interfaces, I enjoy the process of bringing ideas to life through code.
             </p>
           </motion.div>
 
@@ -302,9 +351,8 @@ function AboutSection() {
             className="mt-10 p-6 bg-background rounded-lg border border-border shadow-sm"
           >
             <p className="text-center font-medium">
-              <span className="text-primary font-bold">Key Achievement:</span> Designed 11 automated Tableau dashboards,
-              reducing report generation time from 4–8 hours to 15 minutes, streamlining data reporting and improving
-              efficiency.
+              <span className="text-primary font-bold">Highlights:</span> SQL • ETL Pipelines • Agile • Tableau •
+              Communication Skills • Data Cleaning & Preparation • Data Integrity • Data Warehousing
             </p>
           </motion.div>
         </motion.div>
@@ -411,14 +459,7 @@ function ExpertiseSection() {
             ))}
           </motion.div>
 
-          <motion.div variants={itemVariants} className="mt-16 text-center">
-            <Button asChild size="lg" className="executive-button group">
-              <Link href="#projects">
-                View Related Projects
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </Button>
-          </motion.div>
+          {/* Removed the "View Related Projects" button as requested */}
         </motion.div>
       </div>
     </section>
@@ -464,7 +505,7 @@ function ProjectsSection() {
       title: "Automated Tableau Dashboards",
       description:
         "Built 11 automated reporting dashboards using Tableau, reducing report creation time from 4-8 hours to 15 minutes per report.",
-      image: "/placeholder.svg?height=600&width=800",
+      image: "/images/project-placeholder.png",
       tags: ["Tableau", "Data Visualization", "Process Automation"],
       link: "#",
       slug: "automated-tableau-dashboards",
@@ -473,7 +514,7 @@ function ProjectsSection() {
       title: "Sales Pipeline Tracking Application",
       description:
         "Created a web application that allowed 300 sales representatives to track their pipeline in real-time, increasing productivity by 85%.",
-      image: "/placeholder.svg?height=600&width=800",
+      image: "/images/project-placeholder.png",
       tags: ["Web Development", "Data Analysis", "Sales Analytics"],
       link: "#",
       slug: "sales-pipeline-tracking-application",
@@ -482,7 +523,7 @@ function ProjectsSection() {
       title: "Pricing Strategy Optimization",
       description:
         "Analyzed 20GB of data to determine the best pricing strategy for 10 new products, identifying opportunities that increased revenue by $1.75M annually.",
-      image: "/placeholder.svg?height=600&width=800",
+      image: "/images/project-placeholder.png",
       tags: ["Pricing Analytics", "Revenue Optimization", "Market Analysis"],
       link: "#",
       slug: "pricing-strategy-optimization",
@@ -602,9 +643,9 @@ function ExperienceSection() {
       description:
         "Focused on data analysis, reporting automation, and process improvement to enhance operational efficiency.",
       achievements: [
-        "Developed a process that collated 2K customer feedback through email surveys after each sale, which garnered 74 responses a week after implementation and snowballed to a 120% response rate later.",
-        "Built 11 automated reporting dashboards using Tableau, reducing report creation time from 4-8 hours to 15 minutes per report.",
-        "Created a web application that allowed 300 sales representatives to track their pipeline in real-time, increasing productivity by 85% across all reps.",
+        "Designed and maintained ETL pipelines for HR data, ensuring accurate data preparation and cleaning before analysis.",
+        "Created SQL queries for data extraction and transformation across large datasets, supporting key reporting initiatives.",
+        "Operated in a fast-paced, agile environment with minimal supervision and strong communication skills across global teams.",
       ],
     },
     {
@@ -613,9 +654,9 @@ function ExperienceSection() {
       period: "Dec 2021 - Dec 2023",
       description: "Focused on project monitoring, reporting, and process improvement to enhance business efficiency.",
       achievements: [
-        "Created 19 automated systems that monitored and reported project status, which improved overall business efficiency by 15% QoQ.",
-        "Created 7 detailed project plans that included the scope of work, timelines, resource needs, dependencies, risks, and mitigation strategies for Growths within 3 weeks of resumption.",
-        "Brainstormed with 7 departments to understand requirements and provided recommendations that improved processes, reduced costs, increased revenue, and enhanced customer experience north of 79%.",
+        "Developed ETL workflows to integrate cross-departmental data, supporting data cleaning, preserving data quality, and enabling accurate modeling processes.",
+        "Collaborated with developers and project managers to translate business needs into data models",
+        "Wrote complex SQL queries including joins, subqueries, and aggregations for dashboard backends",
       ],
     },
   ]
@@ -653,7 +694,11 @@ function ExperienceSection() {
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            <motion.div variants={containerVariants}>
+            {/* Work Experience Column - LEFT SIDE */}
+            <motion.div
+              variants={containerVariants}
+              className="order-2 lg:order-1 bg-background/50 p-6 rounded-lg border border-border/50"
+            >
               <motion.h3 variants={itemVariants} className="text-2xl font-serif font-medium mb-8 flex items-center">
                 <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
                   <svg
@@ -706,7 +751,11 @@ function ExperienceSection() {
               </div>
             </motion.div>
 
-            <motion.div variants={containerVariants}>
+            {/* Education and Certifications Column - RIGHT SIDE */}
+            <motion.div
+              variants={containerVariants}
+              className="order-1 lg:order-2 bg-background/50 p-6 rounded-lg border border-border/50"
+            >
               <motion.h3 variants={itemVariants} className="text-2xl font-serif font-medium mb-8 flex items-center">
                 <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center mr-3">
                   <svg
@@ -792,6 +841,7 @@ function TestimonialsSection() {
   const controls = useAnimation()
   const ref = useRef(null)
   const inView = useInView(ref, { once: true, threshold: 0.2 })
+  const [showPreview, setShowPreview] = useState(false)
 
   useEffect(() => {
     if (inView) {
@@ -822,26 +872,17 @@ function TestimonialsSection() {
     },
   }
 
-  const testimonials = [
+  const previewFeedback = [
     {
-      quote:
-        "Jahwon's data analysis skills transformed our business. His Tableau dashboards reduced our reporting time dramatically and provided insights we never had before.",
-      name: "Sarah Johnson",
-      title: "Director of Analytics, BLUEVOYANT",
+      quote: "Sample feedback - This will show what your testimonial will look like once submitted.",
+      name: "Your Name",
+      title: "Your Position, Company",
       avatar: "/placeholder.svg?height=80&width=80",
     },
     {
-      quote:
-        "Working with Jahwon was a game-changer for our sales team. The pipeline tracking application he built increased our productivity by 85% and gave us real-time visibility into our sales process.",
-      name: "Michael Chen",
-      title: "VP of Sales, BLUEVOYANT",
-      avatar: "/placeholder.svg?height=80&width=80",
-    },
-    {
-      quote:
-        "Jahwon's Lean Six Sigma expertise helped us identify and eliminate inefficiencies in our processes. His recommendations led to significant cost savings and improved customer satisfaction.",
-      name: "Emily Rodriguez",
-      title: "Operations Manager, Progressive Insurance",
+      quote: "Another example of how your feedback will be displayed in our testimonial section.",
+      name: "Colleague Name",
+      title: "Professional Title",
       avatar: "/placeholder.svg?height=80&width=80",
     },
   ]
@@ -863,46 +904,69 @@ function TestimonialsSection() {
             <div className="w-20 h-1 bg-accent mx-auto mt-6"></div>
           </motion.div>
 
-          <motion.div variants={containerVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
+          <motion.div variants={itemVariants} className="mt-12 text-center">
+            <div className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium mb-6">
+              <span className="relative flex h-3 w-3 mr-1">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+              </span>
+              Currently gathering feedback
+            </div>
+
+            <div className="mb-8">
+              <Button variant="outline" onClick={() => setShowPreview(!showPreview)} className="mx-auto">
+                {showPreview ? "Hide Preview" : "Preview Feedback Format"}
+              </Button>
+            </div>
+
+            {showPreview && (
               <motion.div
-                key={index}
-                variants={itemVariants}
-                className="bg-background border border-border rounded-lg p-8 shadow-sm hover:shadow-lg transition-all duration-300"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                className="mx-auto grid gap-8 sm:grid-cols-2 max-w-3xl mb-12"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="40"
-                  height="40"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="text-primary/20 mb-6"
-                >
-                  <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path>
-                  <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path>
-                </svg>
-                <p className="italic text-muted-foreground mb-6">"{testimonial.quote}"</p>
-                <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 rounded-full overflow-hidden bg-muted">
-                    <Image
-                      src={testimonial.avatar || "/placeholder.svg"}
-                      alt={testimonial.name}
-                      width={48}
-                      height={48}
-                      className="object-cover"
-                    />
+                {previewFeedback.map((feedback, index) => (
+                  <div
+                    key={index}
+                    className="bg-background border border-dashed border-primary/30 bg-primary/5 rounded-lg p-8 shadow-sm"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-primary/20 mb-6"
+                    >
+                      <path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V20c0 1 0 1 1 1z"></path>
+                      <path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 4v3c0 1 0 1 1 1z"></path>
+                    </svg>
+                    <p className="italic text-muted-foreground mb-6">"{feedback.quote}"</p>
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-full overflow-hidden bg-muted">
+                        <Image
+                          src={feedback.avatar || "/placeholder.svg"}
+                          alt={feedback.name}
+                          width={48}
+                          height={48}
+                          className="object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p className="font-medium">{feedback.name}</p>
+                        <p className="text-sm text-muted-foreground">{feedback.title}</p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-medium">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.title}</p>
-                  </div>
-                </div>
+                ))}
               </motion.div>
-            ))}
+            )}
           </motion.div>
         </motion.div>
       </div>
@@ -944,52 +1008,6 @@ function ContactSection() {
     },
   }
 
-  const [formState, setFormState] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-    category: "general" as ContactCategory,
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle")
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setFormState((prev) => ({ ...prev, [name]: value }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-    setSubmitStatus("idle")
-
-    try {
-      // Send the form data to our API
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formState),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to send message")
-      }
-
-      // Reset form and show success message
-      setFormState({ name: "", email: "", subject: "", message: "", category: "general" })
-      setSubmitStatus("success")
-    } catch (error) {
-      console.error("Error sending message:", error)
-      setSubmitStatus("error")
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   return (
     <section id="contact" className="executive-section relative overflow-hidden">
       <div className="absolute inset-0 dot-pattern opacity-10 -z-10"></div>
@@ -1002,7 +1020,8 @@ function ContactSection() {
             </span>
             <h2 className="executive-heading">Let's Connect</h2>
             <p className="executive-paragraph max-w-2xl mx-auto mt-4">
-              Have a project in mind or want to discuss potential opportunities? I'd love to hear from you.
+              Have a project in mind or want to discuss potential opportunities? I'd love to hear from you. Use the
+              floating contact button in the bottom-right corner to send me a message.
             </p>
             <div className="w-20 h-1 bg-accent mx-auto mt-6"></div>
           </motion.div>
@@ -1057,9 +1076,7 @@ function ContactSection() {
                   </div>
                   <div>
                     <p className="font-medium">Phone</p>
-                    <a href="tel:+17868689730" className="text-primary hover:underline">
-                      +1 (786) 868-9730
-                    </a>
+                    <p className="text-muted-foreground">Please contact me via email for my number</p>
                   </div>
                 </div>
 
@@ -1136,13 +1153,21 @@ function ContactSection() {
                       <path d="M9 18c-4.51 2-5-2-7-2"></path>
                     </svg>
                   </Link>
-                  <Link
-                    href="https://twitter.com/jahwongrant"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="p-3 rounded-full bg-primary/10 hover:bg-primary/20 text-primary transition-colors"
-                    aria-label="Twitter"
-                  >
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="bg-background border border-border rounded-lg p-8 shadow-sm">
+              <h3 className="text-2xl font-serif font-medium mb-6">How to Reach Me</h3>
+
+              <div className="space-y-6">
+                <p className="text-muted-foreground">
+                  I've implemented a convenient floating contact button that you can access from anywhere on this site.
+                  Simply click the button in the bottom-right corner to open the contact form.
+                </p>
+
+                <div className="p-6 bg-primary/5 rounded-lg border border-primary/10">
+                  <h4 className="font-medium mb-2 flex items-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -1153,136 +1178,41 @@ function ContactSection() {
                       strokeWidth="2"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                    >
-                      <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                    </svg>
-                  </Link>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div variants={itemVariants} className="bg-background border border-border rounded-lg p-8 shadow-sm">
-              <h3 className="text-2xl font-serif font-medium mb-6">Send a Message</h3>
-
-              <form className="space-y-6" onSubmit={handleSubmit}>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="name" className="block text-sm font-medium mb-2">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formState.name}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-                      placeholder="Your name"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium mb-2">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formState.email}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-                      placeholder="your.email@example.com"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium mb-2">
-                    Subject
-                  </label>
-                  <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    value={formState.subject}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    placeholder="What is this regarding?"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="category" className="block text-sm font-medium mb-2">
-                    Message Category
-                  </label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={formState.category}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    required
-                  >
-                    <option value="general">General Inquiry</option>
-                    <option value="job">Job Opportunity</option>
-                    <option value="consulting">Consulting Project</option>
-                    <option value="freelance">Freelance Work</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={5}
-                    value={formState.message}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-2 border border-border rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    placeholder="Your message..."
-                    required
-                  ></textarea>
-                </div>
-
-                {submitStatus === "success" && (
-                  <div className="p-3 bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-300 rounded-md">
-                    Your message has been sent successfully! I'll get back to you soon.
-                  </div>
-                )}
-
-                {submitStatus === "error" && (
-                  <div className="p-3 bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-300 rounded-md">
-                    There was an error sending your message. Please try again or email me directly.
-                  </div>
-                )}
-
-                <Button type="submit" className="executive-button w-full" disabled={isSubmitting}>
-                  {isSubmitting ? "Sending..." : "Send Message"}
-                  {!isSubmitting && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="ml-2"
+                      className="mr-2 text-primary"
                     >
                       <path d="m22 2-7 20-4-9-9-4Z"></path>
                       <path d="M22 2 11 13"></path>
                     </svg>
-                  )}
-                </Button>
-              </form>
+                    Quick Response
+                  </h4>
+                  <p>
+                    I typically respond to all inquiries within 24-48 hours. For urgent matters, please reach out
+                    directly via phone.
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <h4 className="font-medium">Preferred Contact Methods:</h4>
+                  <ul className="space-y-2">
+                    <li className="flex items-start">
+                      <span className="text-primary mr-2">•</span>
+                      <span>Contact form (fastest response)</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-primary mr-2">•</span>
+                      <span>Email for detailed project inquiries</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-primary mr-2">•</span>
+                      <span>LinkedIn for professional networking</span>
+                    </li>
+                    <li className="flex items-start">
+                      <span className="text-primary mr-2">•</span>
+                      <span>Phone for urgent matters</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         </motion.div>

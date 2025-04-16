@@ -1,127 +1,94 @@
-import Link from "next/link"
 import type { Metadata } from "next"
-import { baseMetadata } from "../metadata"
+import Link from "next/link"
 
 export const metadata: Metadata = {
-  ...baseMetadata,
-  title: "Privacy Policy",
+  title: "Privacy Policy | Jahwon Grant",
   description: "Privacy policy for Jahwon Grant's data analytics portfolio website.",
 }
 
-export default function PrivacyPolicy() {
+export default function PrivacyPage() {
   return (
-    <div className="container py-12 md:py-16 lg:py-24">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold mb-8 executive-text-gradient">
-          Privacy Policy
-        </h1>
+    <div className="container max-w-3xl py-12">
+      <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>
 
-        <div className="prose prose-lg dark:prose-invert max-w-none">
-          <p>Last updated: April 14, 2025</p>
+      <div className="prose dark:prose-invert">
+        <p className="text-muted-foreground mb-4">Last updated: April 1, 2023</p>
 
-          <h2>Introduction</h2>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Introduction</h2>
           <p>
-            Welcome to Jahwon Grant's portfolio website. I respect your privacy and am committed to protecting your
-            personal data. This privacy policy will inform you about how I look after your personal data when you visit
-            my website and tell you about your privacy rights.
+            This Privacy Policy describes how Jahwon Grant ("we," "us," or "our") collects, uses, and discloses your
+            information when you visit jahwongrant.com (the "Website").
           </p>
+        </section>
 
-          <h2>The Data I Collect</h2>
-          <p>When you visit my website, I may collect the following types of information:</p>
-          <ul>
-            <li>
-              <strong>Contact Information:</strong> If you use the contact form, I collect your name, email address, and
-              any other information you provide in your message.
-            </li>
-            <li>
-              <strong>Usage Data:</strong> I collect anonymous information about how you interact with my website,
-              including pages visited, time spent on pages, and other analytical data.
-            </li>
-            <li>
-              <strong>Technical Data:</strong> This includes your IP address, browser type and version, time zone
-              setting, browser plug-in types and versions, operating system, and platform.
-            </li>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Information We Collect</h2>
+          <p className="mb-4">
+            We collect information that you provide directly to us, such as when you fill out a contact form or
+            subscribe to our newsletter.
+          </p>
+          <p>We also automatically collect certain information when you visit our Website, including:</p>
+          <ul className="list-disc pl-6 my-4">
+            <li>Log and usage data (such as IP address, browser type, pages visited)</li>
+            <li>Device information (such as device type, operating system)</li>
+            <li>Location information</li>
           </ul>
+        </section>
 
-          <h2>How I Use Your Data</h2>
-          <p>I use the information I collect for the following purposes:</p>
-          <ul>
-            <li>To respond to your inquiries and provide you with the information you request</li>
-            <li>To improve my website and ensure it is presented in the most effective manner for you</li>
-            <li>To analyze how visitors use my website to improve the user experience</li>
-            <li>To protect the security and integrity of my website</li>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">How We Use Your Information</h2>
+          <p>We use the information we collect to:</p>
+          <ul className="list-disc pl-6 my-4">
+            <li>Provide, maintain, and improve our Website</li>
+            <li>Respond to your comments, questions, and requests</li>
+            <li>Analyze how you use our Website</li>
+            <li>Send you technical notices and updates</li>
           </ul>
+        </section>
 
-          <h2>Cookies</h2>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Cookies</h2>
           <p>
-            My website uses cookies to enhance your browsing experience. Cookies are small text files that are placed on
-            your device when you visit a website. They help me provide you with a better website experience by enabling
-            me to monitor which pages you find useful.
+            We use cookies and similar tracking technologies to track activity on our Website and hold certain
+            information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
           </p>
-          <p>
-            You can set your browser to refuse all or some browser cookies, or to alert you when websites set or access
-            cookies. If you disable or refuse cookies, please note that some parts of this website may become
-            inaccessible or not function properly.
-          </p>
+        </section>
 
-          <h2>Analytics</h2>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Third-Party Services</h2>
           <p>
-            I use Google Analytics to analyze the use of my website. Google Analytics gathers information about website
-            use by means of cookies. The information gathered is used to create reports about the use of my website.
+            We may use third-party services such as Google Analytics that collect, monitor, and analyze user data. These
+            third parties have their own privacy policies addressing how they use such information.
           </p>
-          <p>
-            Google's privacy policy is available at:{" "}
-            <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
-              https://policies.google.com/privacy
-            </a>
-          </p>
+        </section>
 
-          <h2>Data Security</h2>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Data Security</h2>
           <p>
-            I have implemented appropriate security measures to prevent your personal data from being accidentally lost,
-            used, or accessed in an unauthorized way, altered, or disclosed. In addition, I limit access to your
-            personal data to those who have a business need to know.
+            We have implemented measures to secure your personal information from accidental loss and unauthorized
+            access, use, alteration, and disclosure.
           </p>
+        </section>
 
-          <h2>Data Retention</h2>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Changes to This Privacy Policy</h2>
           <p>
-            I will only retain your personal data for as long as necessary to fulfill the purposes I collected it for,
-            including for the purposes of satisfying any legal, accounting, or reporting requirements.
+            We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new
+            Privacy Policy on this page.
           </p>
+        </section>
 
-          <h2>Your Rights</h2>
-          <p>
-            Under certain circumstances, you have rights under data protection laws in relation to your personal data,
-            including the right to:
-          </p>
-          <ul>
-            <li>Request access to your personal data</li>
-            <li>Request correction of your personal data</li>
-            <li>Request erasure of your personal data</li>
-            <li>Object to processing of your personal data</li>
-            <li>Request restriction of processing your personal data</li>
-            <li>Request transfer of your personal data</li>
-            <li>Right to withdraw consent</li>
-          </ul>
+        <section className="mb-8">
+          <h2 className="text-xl font-semibold mb-4">Contact Us</h2>
+          <p>If you have any questions about this Privacy Policy, please contact us at contact@jahwongrant.com.</p>
+        </section>
+      </div>
 
-          <h2>Changes to This Privacy Policy</h2>
-          <p>
-            I may update this privacy policy from time to time. I will notify you of any changes by posting the new
-            privacy policy on this page.
-          </p>
-
-          <h2>Contact Me</h2>
-          <p>If you have any questions about this privacy policy or my data practices, please contact me at:</p>
-          <p>
-            Email: <a href="mailto:jahwongrant@gmail.com">jahwongrant@gmail.com</a>
-          </p>
-
-          <div className="mt-12">
-            <Link href="/" className="text-primary hover:underline">
-              Return to Home Page
-            </Link>
-          </div>
-        </div>
+      <div className="mt-12">
+        <Link href="/" className="text-primary hover:underline">
+          ← Back to Home
+        </Link>
       </div>
     </div>
   )

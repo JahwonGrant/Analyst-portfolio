@@ -53,9 +53,11 @@ export default function HeroSection() {
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </a>
               </Button>
-              <Button variant="outline" size="lg" className="group">
-                <Download className="mr-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
-                Download Resume
+              <Button variant="outline" size="lg" className="group" asChild>
+                <a href="/resume.pdf" download>
+                  <Download className="mr-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
+                  Download Resume
+                </a>
               </Button>
             </div>
             <div className="flex items-center gap-4 pt-4">
@@ -93,13 +95,7 @@ export default function HeroSection() {
             <div className="relative subtle-float">
               <div className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-primary/30 to-secondary/30 blur opacity-50"></div>
               <div className="relative h-[280px] w-[280px] overflow-hidden rounded-full border-4 border-background bg-muted sm:h-[350px] sm:w-[350px] md:h-[400px] md:w-[400px]">
-                <Image
-                  src="/placeholder.svg?height=400&width=400"
-                  alt="Jahwon Grant"
-                  fill
-                  className="object-cover"
-                  priority
-                />
+                <Image src="/images/headshot.jpg" alt="Jahwon Grant" fill className="object-cover" priority />
               </div>
             </div>
           </div>

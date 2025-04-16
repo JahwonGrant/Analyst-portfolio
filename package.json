@@ -62,7 +62,7 @@
     "framer-motion": "latest",
     "react-intersection-observer": "latest",
     "fs": "latest",
-    "path": "latest"
+    "jspdf": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

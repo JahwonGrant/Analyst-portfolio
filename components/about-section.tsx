@@ -1,133 +1,106 @@
 "use client"
 
-import { motion } from "framer-motion"
-import { BarChart3, Database, LineChart, TrendingUp } from "lucide-react"
-import { useInView } from "react-intersection-observer"
-
-import { Card } from "@/components/ui/card"
+import { useEffect, useRef } from "react"
+import { motion, useAnimation, useInView } from "framer-motion"
 
 export default function AboutSection() {
-  const { ref, inView } = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  })
+  const controls = useAnimation()
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, threshold: 0.2 })
 
-  const container = {
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible")
+    }
+  }, [controls, inView])
+
+  const containerVariants = {
     hidden: { opacity: 0 },
-    show: {
+    visible: {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
+        delayChildren: 0.1,
       },
     },
   }
 
-  const item = {
+  const itemVariants = {
     hidden: { y: 20, opacity: 0 },
-    show: { y: 0, opacity: 1, transition: { duration: 0.5 } },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    },
   }
 
   return (
-    <section id="about" className="py-24 sm:py-32 bg-muted/30">
-      <div className="container">
-        <div className="mx-auto flex max-w-[58rem] flex-col items-center space-y-4 text-center">
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">About Me</span>
-          <h2 className="text-3xl font-bold leading-[1.1] sm:text-3xl md:text-5xl">Turning Data into Decisions</h2>
-          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7">
-            Born and raised in Miami, Florida, I've always been driven by a passion for problem-solving and helping
-            others. I initially started college on a pre-nursing track, but my curiosity for technology and business led
-            me to pivot into Management Information Systems.
-          </p>
-          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7 mt-4">
-            I earned my MIS degree in 2023 and am currently pursuing my MBA with a concentration in Business Analytics,
-            expected in 2026. Go Argos! Along the way, I interned at Progressive Insurance and worked as an HRIS Data
-            Analyst at BlueVoyant, where I led high-impact projects in pricing strategy, reporting automation, and
-            dashboard development.
-          </p>
-          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7 mt-4">
-            Today, I'm a data analyst with over 3 years of experience turning complex datasets into actionable insights.
-            My focus areas include data visualization, process improvement, and business intelligence—enabling smarter,
-            data-driven decision-making.
-          </p>
-          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7 mt-4">
-            Outside of work, I'm a proud member of Omega Psi Phi Fraternity, Inc., where I'm dedicated to youth
-            mentorship, community service, and academic excellence. I also stay engaged through professional groups like
-            the PMI Emerald Coast Chapter and the Association for Information Systems (AIS) at UWF to continuously
-            sharpen my skills.
-          </p>
-          <p className="max-w-[85%] leading-normal text-muted-foreground sm:text-lg sm:leading-7 mt-4">
-            Looking ahead, my goal is to grow into a leadership role where I can guide teams, drive innovation, and
-            share the knowledge I've gained to empower others along the way.
-          </p>
-          <div className="mt-4 flex items-center justify-center rounded-lg border bg-card p-4 shadow-sm">
-            <p className="text-center font-medium">
-              <span className="text-primary">Key Achievement:</span> Designed 11 automated Tableau dashboards, reducing
-              report generation time from 4–8 hours to 15 minutes, streamlining data reporting and improving efficiency.
-            </p>
-          </div>
-        </div>
+    <section id="about" className="executive-section bg-muted/30 relative overflow-hidden">
+      <div className="absolute inset-0 grid-pattern opacity-10 -z-10"></div>
 
+      <div className="executive-container">
         <motion.div
           ref={ref}
-          variants={container}
+          variants={containerVariants}
           initial="hidden"
-          animate={inView ? "show" : "hidden"}
-          className="mx-auto grid justify-center gap-6 sm:grid-cols-2 md:max-w-[64rem] md:grid-cols-4 mt-16"
+          animate={controls}
+          className="max-w-4xl mx-auto"
         >
-          <motion.div variants={item}>
-            <Card className="flex flex-col items-center justify-between p-8 h-full transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                <Database className="h-10 w-10 text-primary" />
-              </div>
-              <div className="space-y-2 text-center mt-6">
-                <h3 className="font-bold text-xl">Data Analysis</h3>
-                <p className="text-sm text-muted-foreground">
-                  Expert in statistical techniques, data modeling, and advanced analytics for comprehensive insights.
-                </p>
-              </div>
-            </Card>
+          <motion.div variants={itemVariants} className="text-center mb-12">
+            <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-primary/10 text-primary border border-primary/20 mb-4">
+              About Me
+            </span>
+            <h2 className="executive-heading">Transforming Data into Strategic Decisions</h2>
+            <div className="w-20 h-1 bg-accent mx-auto mt-6"></div>
           </motion.div>
 
-          <motion.div variants={item}>
-            <Card className="flex flex-col items-center justify-between p-8 h-full transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                <BarChart3 className="h-10 w-10 text-primary" />
-              </div>
-              <div className="space-y-2 text-center mt-6">
-                <h3 className="font-bold text-xl">Data Visualization</h3>
-                <p className="text-sm text-muted-foreground">
-                  Creating impactful visualizations with Tableau and effective data storytelling techniques.
-                </p>
-              </div>
-            </Card>
+          <motion.div variants={itemVariants} className="space-y-6 executive-paragraph">
+            <p>
+              Born and raised in Miami, Florida, I've always been driven by a natural curiosity for solving problems and
+              making a meaningful impact. I originally started college on a pre-nursing path, but it didn't take long
+              for me to realize my true interest was at the intersection of technology and business. That shift led me
+              to pursue a degree in Management Information Systems, which I earned in 2023.
+            </p>
+            <p>
+              Now, I'm a data analyst with 3+ years of experience helping organizations turn complex data into clear,
+              actionable insights. I've worked on everything from pricing strategy and reporting automation to
+              full-scale dashboard development. My foundation is built on strong technical skills, but my real value
+              comes from bridging data with business goals—translating numbers into stories that drive decisions.
+            </p>
+            <p>
+              Currently, I'm pursuing my MBA with a concentration in Business Analytics (expected 2026), continuing to
+              sharpen my skills in areas like data visualization, process improvement, and Lean Six Sigma methodologies.
+              I've had the opportunity to work as a Data Analyst at Progressive Insurance and as an HRIS Data Analyst at
+              BlueVoyant, where I collaborated with cross-functional teams on high-impact projects that boosted
+              operational efficiency and strengthened business intelligence across the organization.
+            </p>
+            <p>
+              Outside of the 9-to-5, I stay connected to my values through my involvement with Omega Psi Phi Fraternity,
+              Inc.—mentoring youth, serving my community, and promoting academic excellence. I'm also active in
+              professional groups like the PMI Emerald Coast Chapter and the Association for Information Systems at UWF,
+              where I continue to learn, collaborate, and grow both personally and professionally.
+            </p>
+            <p>
+              In addition to analytics, I've developed a strong interest in full-stack web and app development. I've
+              been building hands-on skills in HTML, CSS, JavaScript, React, and Tailwind CSS—along with version control
+              using Git and GitHub. My portfolio site was designed and developed entirely by me, and it reflects both my
+              technical growth and creative approach to problem-solving. Whether it's building interactive dashboards or
+              designing clean, responsive interfaces, I enjoy the process of bringing ideas to life through code.
+            </p>
           </motion.div>
 
-          <motion.div variants={item}>
-            <Card className="flex flex-col items-center justify-between p-8 h-full transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                <LineChart className="h-10 w-10 text-primary" />
-              </div>
-              <div className="space-y-2 text-center mt-6">
-                <h3 className="font-bold text-xl">Process Improvement</h3>
-                <p className="text-sm text-muted-foreground">
-                  Leveraging Lean Six Sigma principles to streamline processes and reduce inefficiencies.
-                </p>
-              </div>
-            </Card>
-          </motion.div>
-
-          <motion.div variants={item}>
-            <Card className="flex flex-col items-center justify-between p-8 h-full transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
-                <TrendingUp className="h-10 w-10 text-primary" />
-              </div>
-              <div className="space-y-2 text-center mt-6">
-                <h3 className="font-bold text-xl">Business Intelligence</h3>
-                <p className="text-sm text-muted-foreground">
-                  Translating data insights into strategic business recommendations and KPIs.
-                </p>
-              </div>
-            </Card>
+          <motion.div
+            variants={itemVariants}
+            className="mt-10 p-6 bg-background rounded-lg border border-border shadow-sm"
+          >
+            <p className="text-center font-medium">
+              <span className="text-primary font-bold">Key Achievement:</span> Designed 11 automated Tableau dashboards,
+              reducing report generation time from 4–8 hours to 15 minutes, streamlining data reporting and improving
+              efficiency.
+            </p>
           </motion.div>
         </motion.div>
       </div>

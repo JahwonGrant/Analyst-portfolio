@@ -39,20 +39,10 @@ export function ContactSection() {
     setErrorMessage("")
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
+      // Simulate form submission
+      await new Promise((resolve) => setTimeout(resolve, 1500))
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to submit form")
-      }
-
+      // Success
       setSubmitStatus("success")
       setFormData({
         name: "",
@@ -201,3 +191,6 @@ export function ContactSection() {
     </section>
   )
 }
+
+// Add default export
+export default ContactSection
