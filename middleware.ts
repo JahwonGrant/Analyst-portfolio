@@ -2,20 +2,33 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
 export function middleware(request: NextRequest) {
-  // Only apply to /admin routes except for the login page
-  if (request.nextUrl.pathname.startsWith("/admin") && !request.nextUrl.pathname.startsWith("/admin/login")) {
-    // Check if the admin key is in the URL
-    const adminKey = request.nextUrl.searchParams.get("key")
+  // Only apply to /admin routes except for login and reset pages
+  if (
+    request.nextUrl.pathname.startsWith("/admin") &&
+    !request.nextUrl.pathname.startsWith("/admin/login") &&
+    !request.nextUrl.pathname.startsWith("/admin/reset-password")
+  ) {
+    // Check for authentication cookie
+    const authCookie = request.cookies.get("adminAuth")
 
-    // If no key is provided, redirect to login
-    if (!adminKey) {
+    // In a real app, you would validate the JWT token
+    // For now, we'll check if the cookie exists and has a valid format
+    if (!authCookie || !authCookie.value) {
+      // No auth cookie, redirect to login
       return NextResponse.redirect(new URL("/admin/login", request.url))
     }
 
-    // In a real app, you would validate against a secure value
-    // For now, we'll use a simple check
-    if (adminKey !== process.env.ADMIN_KEY && adminKey !== "admin123") {
-      return NextResponse.redirect(new URL("/admin/login?error=invalid", request.url))
+    try {
+      // In a real app, you would verify the JWT token here
+      // For now, we'll just check if it's a valid JSON
+      const authData = JSON.parse(authCookie.value)
+
+      if (!authData.username || !authData.authenticated) {
+        throw new Error("Invalid auth data")
+      }
+    } catch (error) {
+      // Invalid auth cookie, redirect to login
+      return NextResponse.redirect(new URL("/admin/login", request.url))
     }
   }
 

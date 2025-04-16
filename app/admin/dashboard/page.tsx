@@ -1,186 +1,160 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  Legend,
-} from "recharts"
-import { ArchiveIcon, CheckCircleIcon, EyeIcon, InboxIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { ArchiveIcon, CheckCircleIcon, InboxIcon, LogOutIcon, MailIcon, SearchIcon, UserIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { ContactSubmission } from "@/lib/contact-store"
+import { useAdminProtected, useAdminAuth } from "@/lib/admin-auth"
 
-// COLORS for charts
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"]
+// Types for our contact submissions
+interface ContactSubmission {
+  id: string
+  name: string
+  email: string
+  message: string
+  category: string
+  status: "new" | "read" | "replied" | "archived"
+  createdAt: string
+}
 
 export default function AdminDashboard() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const adminKey = searchParams.get("key")
+  const { user, logout } = useAdminAuth()
+  const { loading: authLoading } = useAdminProtected()
 
   const [submissions, setSubmissions] = useState<ContactSubmission[]>([])
-  const [filteredSubmissions, setFilteredSubmissions] = useState<ContactSubmission[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  const [stats, setStats] = useState<any>(null)
-  const [filter, setFilter] = useState<{
-    status: string
-    category: string
-    search: string
-    sortBy: string
-    sortOrder: "asc" | "desc"
-  }>({
-    status: "all",
-    category: "all",
-    search: "",
-    sortBy: "createdAt",
-    sortOrder: "desc",
-  })
+  const [filter, setFilter] = useState("all")
+  const [categoryFilter, setCategoryFilter] = useState("all")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null)
 
   // Fetch submissions
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const response = await fetch(`/api/admin/submissions?key=${adminKey}`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch submissions")
-        }
-        const data = await response.json()
-        setSubmissions(data.submissions)
-        setFilteredSubmissions(data.submissions)
-        setStats(data.stats)
+        // In a real app, this would be an API call
+        // For now, we'll use mock data
+        const mockSubmissions: ContactSubmission[] = [
+          {
+            id: "1",
+            name: "John Doe",
+            email: "john@example.com",
+            message: "I'm interested in hiring you for a data analysis project. Can we schedule a call?",
+            category: "job",
+            status: "new",
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "2",
+            name: "Jane Smith",
+            email: "jane@example.com",
+            message: "Your portfolio is impressive! I'd like to discuss a potential collaboration.",
+            category: "consulting",
+            status: "read",
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "3",
+            name: "Michael Johnson",
+            email: "michael@example.com",
+            message: "I have a question about your experience with machine learning models.",
+            category: "question",
+            status: "replied",
+            createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "4",
+            name: "Sarah Williams",
+            email: "sarah@example.com",
+            message: "We're looking for a data analyst to join our team. Would you be interested?",
+            category: "job",
+            status: "new",
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+          {
+            id: "5",
+            name: "David Brown",
+            email: "david@example.com",
+            message: "I'd like to feature your work in our tech blog. Please let me know if you're interested.",
+            category: "other",
+            status: "archived",
+            createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          },
+        ]
+
+        setSubmissions(mockSubmissions)
+        setLoading(false)
       } catch (err) {
-        setError("Error fetching submissions")
-        console.error(err)
-      } finally {
+        setError("Failed to fetch submissions")
         setLoading(false)
       }
     }
 
-    fetchSubmissions()
-  }, [adminKey])
+    if (!authLoading) {
+      fetchSubmissions()
+    }
+  }, [authLoading])
 
-  // Apply filters
-  useEffect(() => {
-    let result = [...submissions]
-
+  // Filter submissions
+  const filteredSubmissions = submissions.filter((submission) => {
     // Filter by status
-    if (filter.status !== "all") {
-      result = result.filter((sub) => sub.status === filter.status)
+    if (filter !== "all" && submission.status !== filter) {
+      return false
     }
 
     // Filter by category
-    if (filter.category !== "all") {
-      result = result.filter((sub) => sub.category === filter.category)
+    if (categoryFilter !== "all" && submission.category !== categoryFilter) {
+      return false
     }
 
     // Filter by search term
-    if (filter.search) {
-      const searchLower = filter.search.toLowerCase()
-      result = result.filter(
-        (sub) =>
-          sub.name.toLowerCase().includes(searchLower) ||
-          sub.email.toLowerCase().includes(searchLower) ||
-          sub.subject.toLowerCase().includes(searchLower) ||
-          sub.message.toLowerCase().includes(searchLower),
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase()
+      return (
+        submission.name.toLowerCase().includes(term) ||
+        submission.email.toLowerCase().includes(term) ||
+        submission.message.toLowerCase().includes(term)
       )
     }
 
-    // Sort results
-    result.sort((a, b) => {
-      const aValue = a[filter.sortBy as keyof ContactSubmission]
-      const bValue = b[filter.sortBy as keyof ContactSubmission]
+    return true
+  })
 
-      if (typeof aValue === "string" && typeof bValue === "string") {
-        return filter.sortOrder === "asc" ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue)
-      }
+  // Update submission status
+  const updateStatus = (id: string, status: "new" | "read" | "replied" | "archived") => {
+    setSubmissions((prev) => prev.map((sub) => (sub.id === id ? { ...sub, status } : sub)))
 
-      // Default to date comparison
-      const aDate = new Date(a.createdAt).getTime()
-      const bDate = new Date(b.createdAt).getTime()
-      return filter.sortOrder === "asc" ? aDate - bDate : bDate - aDate
-    })
-
-    setFilteredSubmissions(result)
-  }, [submissions, filter])
-
-  // Handle status change
-  const handleStatusChange = async (id: string, status: "new" | "read" | "replied" | "archived") => {
-    try {
-      const response = await fetch(`/api/admin/submissions/${id}?key=${adminKey}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to update submission")
-      }
-
-      // Update local state
-      setSubmissions((prev) => prev.map((sub) => (sub.id === id ? { ...sub, status } : sub)))
-    } catch (err) {
-      console.error(err)
-      setError("Error updating submission")
+    if (selectedSubmission?.id === id) {
+      setSelectedSubmission((prev) => (prev ? { ...prev, status } : null))
     }
   }
 
-  // Handle delete
-  const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this submission?")) {
-      return
-    }
-
-    try {
-      const response = await fetch(`/api/admin/submissions/${id}?key=${adminKey}`, {
-        method: "DELETE",
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to delete submission")
-      }
-
-      // Update local state
-      setSubmissions((prev) => prev.filter((sub) => sub.id !== id))
-    } catch (err) {
-      console.error(err)
-      setError("Error deleting submission")
-    }
+  // Format date
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    }).format(date)
   }
 
-  // Prepare chart data
-  const categoryData = stats?.categoryBreakdown
-    ? Object.entries(stats.categoryBreakdown).map(([name, value]) => ({ name, value }))
-    : []
-
-  const trendData = stats?.submissionsByDay
-    ? Object.entries(stats.submissionsByDay).map(([date, count]) => ({ date, count }))
-    : []
-
-  if (loading) {
+  if (authLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
+      <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-lg">Loading dashboard...</p>
+          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p>Loading...</p>
         </div>
       </div>
     )
@@ -188,348 +162,354 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <div className="container py-8">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Contact Form Dashboard</h1>
-            <p className="text-muted-foreground">Manage and analyze your contact form submissions</p>
-          </div>
-          <Button onClick={() => router.push("/")}>Back to Website</Button>
-        </div>
+      {/* Header */}
+      <header className="bg-background border-b sticky top-0 z-10">
+        <div className="container flex h-16 items-center justify-between py-4">
+          <h1 className="text-xl font-bold">Admin Dashboard</h1>
 
-        {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">{error}</div>}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Submissions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold">{stats?.totalCount || 0}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">New Messages</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-blue-600">{stats?.newCount || 0}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Replied</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-green-600">{stats?.repliedCount || 0}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Archived</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-3xl font-bold text-gray-600">{stats?.archivedCount || 0}</div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Tabs defaultValue="submissions" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="submissions">Submissions</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="submissions" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Filters</CardTitle>
-                <CardDescription>Filter and sort your submissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <Label htmlFor="status-filter">Status</Label>
-                    <Select value={filter.status} onValueChange={(value) => setFilter({ ...filter, status: value })}>
-                      <SelectTrigger id="status-filter">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Statuses</SelectItem>
-                        <SelectItem value="new">New</SelectItem>
-                        <SelectItem value="read">Read</SelectItem>
-                        <SelectItem value="replied">Replied</SelectItem>
-                        <SelectItem value="archived">Archived</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="category-filter">Category</Label>
-                    <Select
-                      value={filter.category}
-                      onValueChange={(value) => setFilter({ ...filter, category: value })}
-                    >
-                      <SelectTrigger id="category-filter">
-                        <SelectValue placeholder="Filter by category" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Categories</SelectItem>
-                        <SelectItem value="job">Job</SelectItem>
-                        <SelectItem value="consulting">Consulting</SelectItem>
-                        <SelectItem value="freelance">Freelance</SelectItem>
-                        <SelectItem value="general">General</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="sort-by">Sort By</Label>
-                    <Select value={filter.sortBy} onValueChange={(value) => setFilter({ ...filter, sortBy: value })}>
-                      <SelectTrigger id="sort-by">
-                        <SelectValue placeholder="Sort by" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="createdAt">Date</SelectItem>
-                        <SelectItem value="name">Name</SelectItem>
-                        <SelectItem value="email">Email</SelectItem>
-                        <SelectItem value="subject">Subject</SelectItem>
-                        <SelectItem value="priority">Priority</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="search">Search</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        id="search"
-                        placeholder="Search submissions..."
-                        value={filter.search}
-                        onChange={(e) => setFilter({ ...filter, search: e.target.value })}
-                      />
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={() => setFilter({ ...filter, sortOrder: filter.sortOrder === "asc" ? "desc" : "asc" })}
-                      >
-                        {filter.sortOrder === "asc" ? (
-                          <ArrowUpIcon className="h-4 w-4" />
-                        ) : (
-                          <ArrowDownIcon className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Contact Form Submissions</CardTitle>
-                <CardDescription>
-                  Showing {filteredSubmissions.length} of {submissions.length} submissions
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {filteredSubmissions.length === 0 ? (
-                    <div className="text-center py-12">
-                      <InboxIcon className="mx-auto h-12 w-12 text-muted-foreground" />
-                      <h3 className="mt-2 text-lg font-medium">No submissions found</h3>
-                      <p className="mt-1 text-muted-foreground">Try adjusting your filters to see more results.</p>
-                    </div>
-                  ) : (
-                    filteredSubmissions.map((submission) => (
-                      <div key={submission.id} className="border rounded-lg p-4 space-y-4">
-                        <div className="flex flex-wrap justify-between items-start gap-2">
-                          <div>
-                            <h3 className="text-lg font-medium">{submission.subject}</h3>
-                            <p className="text-sm text-muted-foreground">
-                              From: {submission.name} ({submission.email})
-                            </p>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            <Badge
-                              variant={
-                                submission.category === "job"
-                                  ? "default"
-                                  : submission.category === "consulting"
-                                    ? "secondary"
-                                    : submission.category === "freelance"
-                                      ? "destructive"
-                                      : "outline"
-                              }
-                            >
-                              {submission.category}
-                            </Badge>
-                            <Badge
-                              variant={
-                                submission.status === "new"
-                                  ? "default"
-                                  : submission.status === "read"
-                                    ? "secondary"
-                                    : submission.status === "replied"
-                                      ? "outline"
-                                      : "outline"
-                              }
-                            >
-                              {submission.status}
-                            </Badge>
-                            <Badge variant="outline">Priority: {submission.priority}</Badge>
-                          </div>
-                        </div>
-
-                        <div className="bg-muted p-3 rounded-md">
-                          <p className="whitespace-pre-wrap">{submission.message}</p>
-                        </div>
-
-                        <div className="flex justify-between items-center">
-                          <div className="text-sm text-muted-foreground">
-                            Received: {new Date(submission.createdAt).toLocaleString()}
-                          </div>
-                          <div className="flex gap-2">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleStatusChange(submission.id, "read")}
-                              disabled={submission.status === "read"}
-                            >
-                              <EyeIcon className="h-4 w-4 mr-1" /> Mark as Read
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleStatusChange(submission.id, "replied")}
-                              disabled={submission.status === "replied"}
-                            >
-                              <CheckCircleIcon className="h-4 w-4 mr-1" /> Mark as Replied
-                            </Button>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleStatusChange(submission.id, "archived")}
-                              disabled={submission.status === "archived"}
-                            >
-                              <ArchiveIcon className="h-4 w-4 mr-1" /> Archive
-                            </Button>
-                            <Button variant="destructive" size="sm" onClick={() => handleDelete(submission.id)}>
-                              <TrashIcon className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="analytics" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Submissions by Category</CardTitle>
-                  <CardDescription>Distribution of messages by category</CardDescription>
-                </CardHeader>
-                <CardContent className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={categoryData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Submission Trends</CardTitle>
-                  <CardDescription>Messages received over the last 30 days</CardDescription>
-                </CardHeader>
-                <CardContent className="h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={trendData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Bar dataKey="count" fill="#8884d8" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <UserIcon className="h-4 w-4" />
+              <span>{user?.username || "Admin"}</span>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Insights</CardTitle>
-                <CardDescription>Key metrics and patterns from your submissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="space-y-2">
-                    <h3 className="font-medium">Top Categories</h3>
-                    <div className="space-y-1">
-                      {categoryData
-                        .sort((a, b) => (b.value as number) - (a.value as number))
-                        .slice(0, 3)
-                        .map((category, index) => (
-                          <div key={index} className="flex justify-between">
-                            <span className="capitalize">{category.name}</span>
-                            <span className="font-medium">{category.value}</span>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
+            <Button variant="ghost" size="sm" onClick={logout}>
+              <LogOutIcon className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
+        </div>
+      </header>
 
-                  <div className="space-y-2">
-                    <h3 className="font-medium">Response Rate</h3>
-                    <div className="text-2xl font-bold">
-                      {stats?.repliedCount && stats?.totalCount
-                        ? `${((stats.repliedCount / stats.totalCount) * 100).toFixed(0)}%`
-                        : "0%"}
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {stats?.repliedCount || 0} of {stats?.totalCount || 0} messages replied
-                    </p>
-                  </div>
+      <div className="container py-6">
+        <Tabs defaultValue="inbox">
+          <div className="flex flex-col md:flex-row gap-6">
+            {/* Sidebar */}
+            <div className="w-full md:w-64 space-y-4">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="inbox">Inbox</TabsTrigger>
+                <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              </TabsList>
 
-                  <div className="space-y-2">
-                    <h3 className="font-medium">Average Messages per Day</h3>
-                    <div className="text-2xl font-bold">
-                      {trendData.length > 0
-                        ? (trendData.reduce((sum, item) => sum + (item.count as number), 0) / trendData.length).toFixed(
-                            1,
-                          )
-                        : "0"}
-                    </div>
-                    <p className="text-sm text-muted-foreground">Based on the last {trendData.length} days</p>
-                  </div>
+              <div className="space-y-2">
+                <div className="font-medium">Status</div>
+                <div className="space-y-1">
+                  <Button
+                    variant={filter === "all" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setFilter("all")}
+                  >
+                    <InboxIcon className="h-4 w-4 mr-2" />
+                    All
+                    <Badge className="ml-auto">{submissions.length}</Badge>
+                  </Button>
+
+                  <Button
+                    variant={filter === "new" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setFilter("new")}
+                  >
+                    <MailIcon className="h-4 w-4 mr-2" />
+                    New
+                    <Badge className="ml-auto">{submissions.filter((s) => s.status === "new").length}</Badge>
+                  </Button>
+
+                  <Button
+                    variant={filter === "read" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setFilter("read")}
+                  >
+                    <CheckCircleIcon className="h-4 w-4 mr-2" />
+                    Read
+                    <Badge className="ml-auto">{submissions.filter((s) => s.status === "read").length}</Badge>
+                  </Button>
+
+                  <Button
+                    variant={filter === "replied" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setFilter("replied")}
+                  >
+                    <CheckCircleIcon className="h-4 w-4 mr-2" />
+                    Replied
+                    <Badge className="ml-auto">{submissions.filter((s) => s.status === "replied").length}</Badge>
+                  </Button>
+
+                  <Button
+                    variant={filter === "archived" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setFilter("archived")}
+                  >
+                    <ArchiveIcon className="h-4 w-4 mr-2" />
+                    Archived
+                    <Badge className="ml-auto">{submissions.filter((s) => s.status === "archived").length}</Badge>
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              </div>
+
+              <div className="space-y-2">
+                <div className="font-medium">Category</div>
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    <SelectItem value="job">Job Opportunities</SelectItem>
+                    <SelectItem value="consulting">Consulting</SelectItem>
+                    <SelectItem value="question">Questions</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex-1">
+              <TabsContent value="inbox" className="mt-0">
+                <Card>
+                  <CardHeader className="p-4">
+                    <div className="flex items-center justify-between">
+                      <CardTitle>Contact Submissions</CardTitle>
+                      <div className="relative w-64">
+                        <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          type="search"
+                          placeholder="Search messages..."
+                          className="pl-8"
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <CardDescription>
+                      {filteredSubmissions.length} {filteredSubmissions.length === 1 ? "message" : "messages"} found
+                    </CardDescription>
+                  </CardHeader>
+
+                  <CardContent className="p-0">
+                    {loading ? (
+                      <div className="flex justify-center p-8">
+                        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
+                      </div>
+                    ) : error ? (
+                      <div className="p-8 text-center text-red-500">{error}</div>
+                    ) : filteredSubmissions.length === 0 ? (
+                      <div className="p-8 text-center text-muted-foreground">No messages found</div>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
+                        {/* Message List */}
+                        <div className="border rounded-md overflow-hidden">
+                          <div className="divide-y max-h-[600px] overflow-y-auto">
+                            {filteredSubmissions.map((submission) => (
+                              <div
+                                key={submission.id}
+                                className={`p-4 cursor-pointer hover:bg-muted transition-colors ${
+                                  selectedSubmission?.id === submission.id ? "bg-muted" : ""
+                                }`}
+                                onClick={() => {
+                                  setSelectedSubmission(submission)
+                                  if (submission.status === "new") {
+                                    updateStatus(submission.id, "read")
+                                  }
+                                }}
+                              >
+                                <div className="flex justify-between items-start mb-1">
+                                  <div className="font-medium">{submission.name}</div>
+                                  <div className="text-xs text-muted-foreground">
+                                    {formatDate(submission.createdAt)}
+                                  </div>
+                                </div>
+                                <div className="text-sm text-muted-foreground mb-1">{submission.email}</div>
+                                <div className="text-sm line-clamp-2">{submission.message}</div>
+                                <div className="flex gap-2 mt-2">
+                                  <Badge
+                                    variant={
+                                      submission.status === "new"
+                                        ? "default"
+                                        : submission.status === "read"
+                                          ? "secondary"
+                                          : submission.status === "replied"
+                                            ? "outline"
+                                            : submission.status === "archived"
+                                              ? "destructive"
+                                              : "default"
+                                    }
+                                  >
+                                    {submission.status.charAt(0).toUpperCase() + submission.status.slice(1)}
+                                  </Badge>
+                                  <Badge variant="outline">{submission.category}</Badge>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Message Detail */}
+                        <div className="border rounded-md p-4">
+                          {selectedSubmission ? (
+                            <div>
+                              <div className="flex justify-between items-start mb-4">
+                                <div>
+                                  <h3 className="text-lg font-bold">{selectedSubmission.name}</h3>
+                                  <p className="text-sm text-muted-foreground">{selectedSubmission.email}</p>
+                                </div>
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => updateStatus(selectedSubmission.id, "replied")}
+                                    disabled={selectedSubmission.status === "replied"}
+                                  >
+                                    Mark as Replied
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => updateStatus(selectedSubmission.id, "archived")}
+                                    disabled={selectedSubmission.status === "archived"}
+                                  >
+                                    Archive
+                                  </Button>
+                                </div>
+                              </div>
+
+                              <div className="mb-4">
+                                <div className="text-sm text-muted-foreground mb-1">
+                                  Received: {formatDate(selectedSubmission.createdAt)}
+                                </div>
+                                <div className="flex gap-2 mb-4">
+                                  <Badge
+                                    variant={
+                                      selectedSubmission.status === "new"
+                                        ? "default"
+                                        : selectedSubmission.status === "read"
+                                          ? "secondary"
+                                          : selectedSubmission.status === "replied"
+                                            ? "outline"
+                                            : "destructive"
+                                    }
+                                  >
+                                    {selectedSubmission.status.charAt(0).toUpperCase() +
+                                      selectedSubmission.status.slice(1)}
+                                  </Badge>
+                                  <Badge variant="outline">{selectedSubmission.category}</Badge>
+                                </div>
+                              </div>
+
+                              <div className="border-t pt-4">
+                                <h4 className="font-medium mb-2">Message:</h4>
+                                <p className="whitespace-pre-wrap">{selectedSubmission.message}</p>
+                              </div>
+
+                              <div className="mt-6">
+                                <h4 className="font-medium mb-2">Quick Reply:</h4>
+                                <div className="flex gap-2 flex-wrap">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                      alert(`Email sent to ${selectedSubmission.email}`)
+                                      updateStatus(selectedSubmission.id, "replied")
+                                    }}
+                                  >
+                                    Send Thank You
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                      alert(`Email sent to ${selectedSubmission.email}`)
+                                      updateStatus(selectedSubmission.id, "replied")
+                                    }}
+                                  >
+                                    Request More Info
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                      alert(`Email sent to ${selectedSubmission.email}`)
+                                      updateStatus(selectedSubmission.id, "replied")
+                                    }}
+                                  >
+                                    Schedule Call
+                                  </Button>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="h-full flex items-center justify-center text-muted-foreground">
+                              <div className="text-center">
+                                <MailIcon className="h-12 w-12 mx-auto mb-4 opacity-20" />
+                                <p>Select a message to view details</p>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="analytics" className="mt-0">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Analytics</CardTitle>
+                    <CardDescription>Overview of your contact form submissions</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                      <Card>
+                        <CardContent className="p-6">
+                          <div className="text-2xl font-bold">{submissions.length}</div>
+                          <p className="text-xs text-muted-foreground">Total Submissions</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-6">
+                          <div className="text-2xl font-bold">
+                            {submissions.filter((s) => s.status === "new").length}
+                          </div>
+                          <p className="text-xs text-muted-foreground">New Messages</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-6">
+                          <div className="text-2xl font-bold">
+                            {submissions.filter((s) => s.category === "job").length}
+                          </div>
+                          <p className="text-xs text-muted-foreground">Job Opportunities</p>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-6">
+                          <div className="text-2xl font-bold">
+                            {submissions.filter((s) => s.category === "consulting").length}
+                          </div>
+                          <p className="text-xs text-muted-foreground">Consulting Inquiries</p>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    <div className="mt-8">
+                      <h3 className="text-lg font-medium mb-4">Message Categories</h3>
+                      <div className="h-64 bg-muted/50 rounded-lg flex items-center justify-center">
+                        <p className="text-muted-foreground">Category distribution chart would appear here</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-8">
+                      <h3 className="text-lg font-medium mb-4">Message Timeline</h3>
+                      <div className="h-64 bg-muted/50 rounded-lg flex items-center justify-center">
+                        <p className="text-muted-foreground">Message timeline chart would appear here</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </div>
+          </div>
         </Tabs>
       </div>
     </div>
