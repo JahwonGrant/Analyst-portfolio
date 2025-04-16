@@ -650,7 +650,7 @@ function ExperienceSection() {
     {
       degree: "Master of Business Administration in Business Analytics",
       institution: "University of West Florida",
-      period: "2023 - 2025",
+      period: "May 2024 - Aug 2026",
       description: "Specialized in business analytics and data science with focus on strategic analysis.",
     },
     {
