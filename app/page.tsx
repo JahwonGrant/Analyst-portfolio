@@ -4,16 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import Script from "next/script"
 import { motion, useAnimation, useInView } from "framer-motion"
-import {
-  ArrowRight,
-  Download,
-  ChevronDown,
-  ExternalLink,
-  BarChart2,
-  Database,
-  TrendingUp,
-  LineChart,
-} from "lucide-react"
+import { ArrowRight, ChevronDown, ExternalLink, BarChart2, Database, TrendingUp, LineChart } from "lucide-react"
 import Image from "next/image"
 
 import { Button } from "@/components/ui/button"
@@ -175,12 +166,6 @@ function HeroSection() {
                   View My Portfolio
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="group">
-                <a href="/resume.pdf" download>
-                  <Download className="mr-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
-                  Download Resume
-                </a>
               </Button>
             </motion.div>
 
@@ -649,7 +634,7 @@ function ExperienceSection() {
       ],
     },
     {
-      title: "Data Analyst Internship",
+      title: "Data Analyst",
       company: "Progressive Insurance Company",
       period: "Dec 2021 - Dec 2023",
       description: "Focused on project monitoring, reporting, and process improvement to enhance business efficiency.",
