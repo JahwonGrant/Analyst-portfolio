@@ -54,7 +54,7 @@ export default function HeroSection() {
                 </a>
               </Button>
               <Button variant="outline" size="lg" className="group" asChild>
-                <a href="/images/resume.pdf" download>
+                <a href="/images/Grant.J_resume(2025).pdf" download>
                   <Download className="mr-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
                   Download Resume
                 </a>
