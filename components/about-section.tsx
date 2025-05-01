@@ -71,7 +71,7 @@ export default function AboutSection() {
               comes from bridging data with business goals—translating numbers into stories that drive decisions.
             </p>
             <p>
-              Currently, I'm pursuing my MBA with a concentration in Business Analytics (expected 2026), continuing to
+              Currently, I'm pursuing my MBA with a concentration in Business Analytics at the University of West Florida (expected 2026), continuing to
               sharpen my skills in areas like data visualization, process improvement, and Lean Six Sigma methodologies.
               I've had the opportunity to work as a Data Analyst at Progressive Insurance and as an HRIS Data Analyst at
               BlueVoyant, where I collaborated with cross-functional teams on high-impact projects that boosted
